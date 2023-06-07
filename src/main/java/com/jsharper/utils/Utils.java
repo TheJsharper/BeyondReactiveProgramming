@@ -7,7 +7,7 @@ import com.github.javafaker.Faker;
 public class Utils {
 
 	public static <T> Consumer<T> onNext() {
-		return (T value) -> System.out.println("Received " + value);
+		return (T value) -> System.out.println("Received: " + value);
 	}
 
 	public static Consumer<Throwable> onError() {

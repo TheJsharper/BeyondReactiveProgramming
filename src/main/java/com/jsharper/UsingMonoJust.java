@@ -10,6 +10,7 @@ public class UsingMonoJust {
 		UsingMonoJust that = new UsingMonoJust();
 		that.getMonoOf();
 		that.getMonoExcepctionOf();
+		
 	}
 
 	public Mono<Integer> getMonoOf(Integer value) {
