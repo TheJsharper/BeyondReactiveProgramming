@@ -16,7 +16,7 @@ public class UsingMonoFromSupplier {
 		fromSupplier.findUserById(2).subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
 		fromSupplier.findUserById(100).subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
 
-		fromSupplier.getFrromSupplier().subscribe(Utils.onNext());
+		fromSupplier.getFromSupplier().subscribe(Utils.onNext());
 	}
 
 	private void getNames() {
@@ -26,7 +26,7 @@ public class UsingMonoFromSupplier {
 				});
 	}
 
-	public Mono<String> getFrromSupplier() {
+	public Mono<String> getFromSupplier() {
 		return Mono.fromSupplier(() -> getSimpleName());
 	}
 
