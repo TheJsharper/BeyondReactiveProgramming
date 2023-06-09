@@ -5,6 +5,7 @@ import java.util.concurrent.CompletionStage;
 
 import org.junit.jupiter.api.Test;
 
+import com.jsharper.mono.from.UsingMonoFrom;
 import com.jsharper.utils.Utils;
 
 import reactor.core.publisher.Mono;

@@ -2,6 +2,8 @@ package com.jsharper;
 
 import org.junit.jupiter.api.Test;
 
+import com.jsharper.mono.from.UsingMonoFromSupplier;
+
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 

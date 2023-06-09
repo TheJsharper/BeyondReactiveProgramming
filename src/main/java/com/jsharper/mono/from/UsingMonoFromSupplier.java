@@ -1,4 +1,4 @@
-package com.jsharper;
+package com.jsharper.mono.from;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
