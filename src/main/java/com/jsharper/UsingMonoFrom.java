@@ -27,7 +27,7 @@ public class UsingMonoFrom {
 
 		from.fromFuture(CompletableFuture.supplyAsync(() -> "test")).subscribe(Utils.onNext());
 
-		from.fromFutureCancellable(CompletableFuture.supplyAsync(() -> "test"), true).subscribe(Utils.onNext());
+		from.fromFuturePreventCancellable(CompletableFuture.supplyAsync(() -> "test"), true).subscribe(Utils.onNext());
 
 		from.fromFutureOfSupplierCompletableFuture("test").subscribe(Utils.onNext());
 
@@ -63,7 +63,7 @@ public class UsingMonoFrom {
 		return Mono.fromFuture(completableFuture);
 	}
 
-	public Mono<String> fromFutureCancellable(CompletableFuture<String> completableFuture, boolean cancel) {
+	public Mono<String> fromFuturePreventCancellable(CompletableFuture<String> completableFuture, boolean cancel) {
 		return Mono.fromFuture(completableFuture, cancel);
 	}
 
