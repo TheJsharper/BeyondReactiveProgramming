@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 
-import com.jsharper.mono.creation.UsingCreate;
+import com.jsharper.mono.creation.UsingMonoCreate;
 import com.jsharper.utils.Utils;
 
 import reactor.core.publisher.Mono;
@@ -14,12 +14,12 @@ import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
-public class UsingCreateTest {
+public class UsingMonoCreateTest {
 
-	private UsingCreate create;
+	private UsingMonoCreate create;
 
-	public UsingCreateTest() {
-		create = new UsingCreate();
+	public UsingMonoCreateTest() {
+		create = new UsingMonoCreate();
 	}
 
 	@Test

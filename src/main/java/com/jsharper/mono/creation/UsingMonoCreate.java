@@ -10,11 +10,11 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
-public class UsingCreate {
+public class UsingMonoCreate {
 
 	public static void main(String[] args) {
 
-		UsingCreate that = new UsingCreate();
+		UsingMonoCreate that = new UsingMonoCreate();
 
 		that.createNext("HeY").subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
 
