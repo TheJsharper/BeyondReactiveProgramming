@@ -45,7 +45,7 @@ public class UsingMonoCreate {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
+		
 	}
 
 	public Mono<String> createNext(String value) {
