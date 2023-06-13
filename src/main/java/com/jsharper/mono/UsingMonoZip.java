@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import com.github.javafaker.Country;
+import com.jsharper.utils.COUNT;
 import com.jsharper.utils.Utils;
 
 import reactor.core.publisher.Mono;
@@ -24,12 +26,36 @@ public class UsingMonoZip {
 			Arrays.asList(values).forEach(System.out::println);
 			return "Hello World";
 		};
-		
+		List<Country> byCountry = Utils.getByCountry(COUNT.TEN);
+		byCountry.forEach((f) -> {
+			String name = f.capital();
+			System.out.println("-->" + name + " ==" + f.name());
+		});
 		zip.zip(combiner, Mono.just(1042)).subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
-		
+
 		zip.zip(Mono.just("first"), Mono.just("second")).subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
+
+		zip.zip(Mono.just("first"), Mono.just("second"), Mono.just("third")).subscribe(Utils.onNext(), Utils.onError(),
+				Utils.onComplete());
+
+		zip.zip(Utils.getMono(), Utils.getMono(), Utils.getMono(), Utils.getMono()).flatMap((t) -> {
+			StringBuilder sb = new StringBuilder();
+			sb.append(t.getT1()).append(",").append(t.getT2()).append(",").append(t.getT3()).append(",")
+					.append(t.getT4());
+			return Mono.just(sb.toString());
+		}).subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
+
+		zip.zip(Utils.getMono(), Utils.getMono(), Utils.getMono(), Mono.error(new RuntimeException("Upsi")),
+				Utils.getMono()).subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
+
+		zip.zip(Utils.getMono(), Utils.getMono(), Utils.getMono(), Mono.empty(), Utils.getMono(), Utils.getMono())
+				.subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
 		
-		zip.zip(Mono.just("first"), Mono.just("second"), Mono.just("third") ).subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
+		zip.zip(Utils.getMono(), Utils.getMono(), Utils.getMono(), Mono.empty(), Utils.getMono(), Utils.getMono(), Utils.getMono())
+		.subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
+		
+		zip.zip(Utils.getMono(), Utils.getMono(), Utils.getMono(), Mono.just("ONE"), Utils.getMono(), Utils.getMono(), Utils.getMono(), Utils.getMono())
+		.subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
 	}
 
 	public Mono<String> zip(Function<Object[], String> combiner, Mono<Integer> source) {
