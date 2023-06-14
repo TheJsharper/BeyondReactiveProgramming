@@ -82,6 +82,8 @@ public class UsingOperatorFromAUntilC {
 				.collect(Collectors.toList());
 		that.concatWith(Mono.just("FIRST ELEMENT"), Flux.fromIterable(map)).subscribe(onNext(), onError(),
 				onComplete());
+		
+	
 
 		try {
 			Thread.sleep(Duration.ofSeconds(7));

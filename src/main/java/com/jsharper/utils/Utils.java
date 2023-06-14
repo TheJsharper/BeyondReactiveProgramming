@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 import com.github.javafaker.Country;
 import com.github.javafaker.Faker;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class Utils {
@@ -38,6 +39,14 @@ public class Utils {
 		return IntStream.range(0, count.getValue()).boxed().map((value) -> faker.country())
 				.collect(Collectors.toList());
 
+	}
+
+	public static List<String> getByCountryStr(COUNT count) {
+		return getByCountry(count).stream().map(Country::name).collect(Collectors.toList());
+	}
+
+	public static Flux<String> getByCountries(List<String> countries) {
+		return Flux.fromIterable(countries);
 	}
 
 	public static Mono<String> getMono() {
