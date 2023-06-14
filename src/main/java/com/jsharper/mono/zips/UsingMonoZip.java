@@ -1,4 +1,4 @@
-package com.jsharper.mono;
+package com.jsharper.mono.zips;
 
 import java.util.Arrays;
 import java.util.List;

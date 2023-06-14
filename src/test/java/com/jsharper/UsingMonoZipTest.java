@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 
-import com.jsharper.mono.UsingMonoZip;
+import com.jsharper.mono.zips.UsingMonoZip;
 import com.jsharper.utils.Utils;
 
 import reactor.core.publisher.Mono;
