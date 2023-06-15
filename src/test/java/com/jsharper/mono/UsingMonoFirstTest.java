@@ -1,4 +1,4 @@
-package com.jsharper;
+package com.jsharper.mono;
 
 import java.time.Duration;
 import java.util.List;

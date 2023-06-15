@@ -1,4 +1,4 @@
-package com.jsharper;
+package com.jsharper.mono;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;

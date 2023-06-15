@@ -6,8 +6,11 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.reactivestreams.Publisher;
+
 import com.github.javafaker.Country;
 import com.github.javafaker.Faker;
+import com.google.common.collect.Lists;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -51,5 +54,22 @@ public class Utils {
 
 	public static Mono<String> getMono() {
 		return Mono.just(Faker.instance().country().name());
+	}
+
+	public static Flux<String> getListOfFlux() {
+		List<String> byCountry = getByCountryStr(COUNT.TEN);
+
+		Flux<String> fromIterable = getByCountries(byCountry);
+
+		return fromIterable;
+	}
+
+	public static List<Publisher<String>> getFluxes(COUNT count) {
+		return IntStream.rangeClosed(1, count.getValue()).mapToObj((value) -> getListOfFlux())
+				.collect(Collectors.toList());
+	}
+
+	public static String getValuesSimpleString(Object[] values) {
+		return Lists.newArrayList(values).stream().map((v) -> v.toString()).collect(Collectors.joining(","));
 	}
 }

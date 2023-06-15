@@ -1,24 +1,22 @@
 package com.jsharper.fluxes.creation;
 
-import static com.jsharper.utils.Utils.getByCountries;
-import static com.jsharper.utils.Utils.getByCountryStr;
+import static com.jsharper.utils.Utils.getFluxes;
+import static com.jsharper.utils.Utils.getListOfFlux;
+import static com.jsharper.utils.Utils.getValuesSimpleString;
 import static com.jsharper.utils.Utils.onComplete;
 import static com.jsharper.utils.Utils.onError;
 import static com.jsharper.utils.Utils.onNext;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.reactivestreams.Publisher;
 
-import com.google.common.collect.Lists;
 import com.jsharper.utils.COUNT;
 
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
 public class CombineLatest {
 
@@ -28,70 +26,54 @@ public class CombineLatest {
 			return "testing: " + values[0];
 		};
 
-		that.combineLatest(combiner, that.getListOfFlux()).subscribe(onNext(), onError(), onComplete());
+		that.combineLatest(combiner, getListOfFlux()).subscribe(onNext(), onError(), onComplete());
 
-		that.combineLatest(combiner, 3, that.getListOfFlux()).subscribe(onNext(), onError(), onComplete());
+		that.combineLatest(combiner, 3, getListOfFlux()).subscribe(onNext(), onError(), onComplete());
 
-		that.combineLatest(that.getListOfFlux(), that.getListOfFlux(), (a, b) -> {
-			return MessageFormat.format("FROM first Flux {0} ----- FROM second  {1} ", a, b);
+		that.combineLatest(getListOfFlux(), getListOfFlux(), (a, b) -> {
+			return MessageFormat.format("FROM  Flux {0} ----- FROM second  {1} ", a, b);
 		}).subscribe(onNext(), onError(), onComplete());
 
-		that.combineLatest(that.getListOfFlux(), that.getListOfFlux(), that.getListOfFlux(), (Object[] values) -> {
+		that.combineLatest(getListOfFlux(), getListOfFlux(), getListOfFlux(), (Object[] values) -> {
 
-			String vv = that.getValuesSimpleString(values);
-			return MessageFormat.format("FROM  Flux ------ {0} -----  ", vv);
+			String message = getValuesSimpleString(values);
+			return MessageFormat.format("FROM  Flux ------ {0} -----  ", message);
 		}).subscribe(onNext(), onError(), onComplete());
 
-		that.combineLatest(that.getListOfFlux(), that.getListOfFlux(), that.getListOfFlux(), that.getListOfFlux(),
+		that.combineLatest(getListOfFlux(), getListOfFlux(), getListOfFlux(), getListOfFlux(), (Object[] values) -> {
+
+			String message = getValuesSimpleString(values);
+			return MessageFormat.format("FROM  Flux ------ {0} -----  ", message);
+		}).subscribe(onNext(), onError(), onComplete());
+
+		that.combineLatest(getListOfFlux(), getListOfFlux(), getListOfFlux(), getListOfFlux(), getListOfFlux(),
 				(Object[] values) -> {
 
-					String vv = that.getValuesSimpleString(values);
-					return MessageFormat.format("FROM  Flux ------ {0} -----  ", vv);
+					String message = getValuesSimpleString(values);
+					return MessageFormat.format("FROM  Flux ------ {0} -----  ", message);
 				}).subscribe(onNext(), onError(), onComplete());
 
-		that.combineLatest(that.getListOfFlux(), that.getListOfFlux(), that.getListOfFlux(), that.getListOfFlux(),
-				that.getListOfFlux(), (Object[] values) -> {
+		that.combineLatest(getListOfFlux(), getListOfFlux(), getListOfFlux(), getListOfFlux(), getListOfFlux(),
+				getListOfFlux(), (Object[] values) -> {
 
-					String vv = that.getValuesSimpleString(values);
-					return MessageFormat.format("FROM  Flux ------ {0} -----  ", vv);
+					String message = getValuesSimpleString(values);
+					return MessageFormat.format("FROM  Flux ------ {0} -----  ", message);
 				}).subscribe(onNext(), onError(), onComplete());
 
-		that.combineLatest(that.getListOfFlux(), that.getListOfFlux(), that.getListOfFlux(), that.getListOfFlux(),
-				that.getListOfFlux(), that.getListOfFlux(), (Object[] values) -> {
+		that.combineLatest(getFluxes(COUNT.TEN), (Object[] values) -> {
 
-					String vv = that.getValuesSimpleString(values);
-					return MessageFormat.format("FROM  Flux ------ {0} -----  ", vv);
-				}).subscribe(onNext(), onError(), onComplete());
-
-		that.combineLatest(that.getFluxes(COUNT.TEN), (Object[] values) -> {
-
-			String vv = that.getValuesSimpleString(values);
-			return MessageFormat.format("FROM  Flux ------ {0} -----  ", vv);
+			String message = getValuesSimpleString(values);
+			return MessageFormat.format("FROM  Flux ------ {0} -----  ", message);
 		}).subscribe(onNext(), onError(), onComplete());
 
-		that.combineLatest(that.getFluxes(COUNT.HUNDRED), 50, (Object[] values) -> {
+		that.combineLatest(getFluxes(COUNT.HUNDRED), 50, (Object[] values) -> {
 
-			String vv = that.getValuesSimpleString(values);
-			return MessageFormat.format("FROM  Flux ------ {0} -----  ", vv);
-		}).subscribe(onNext(), onError(), onComplete());
+			String message = getValuesSimpleString(values);
+			return MessageFormat.format("FROM  Flux ------ {0} -----  ", message);
+		}).log()
+		.publishOn(Schedulers.parallel()).
+		doOnNext((v) -> System.out.println("doOnNext: " + v)).subscribe(onNext(), onError(), onComplete());
 
-	}
-
-	private Flux<String> getListOfFlux() {
-		List<String> byCountry = getByCountryStr(COUNT.TEN);
-
-		Flux<String> fromIterable = getByCountries(byCountry);
-
-		return fromIterable;
-	}
-
-	private List<Publisher<String>> getFluxes(COUNT count) {
-		return IntStream.rangeClosed(1, count.getValue()).mapToObj((value) -> getListOfFlux())
-				.collect(Collectors.toList());
-	}
-
-	private String getValuesSimpleString(Object[] values) {
-		return Lists.newArrayList(values).stream().map((v) -> v.toString()).collect(Collectors.joining(","));
 	}
 
 	public Flux<String> combineLatest(Function<Object[], String> combiner, Publisher<String> sources) {

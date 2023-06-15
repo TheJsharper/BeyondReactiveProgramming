@@ -1,4 +1,4 @@
-package com.jsharper;
+package com.jsharper.mono;
 
 import org.junit.jupiter.api.Test;
 

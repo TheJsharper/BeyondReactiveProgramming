@@ -1,4 +1,4 @@
-package com.jsharper;
+package com.jsharper.mono;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -14,7 +14,6 @@ import org.reactivestreams.Publisher;
 
 import com.github.javafaker.Faker;
 import com.google.common.collect.Lists;
-import com.jsharper.mono.UsingSequenceUsingWhenDelayError;
 import com.jsharper.utils.Utils;
 
 import reactor.core.publisher.Flux;
