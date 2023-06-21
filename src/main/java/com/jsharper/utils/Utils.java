@@ -72,4 +72,12 @@ public class Utils {
 	public static String getValuesSimpleString(Object[] values) {
 		return Lists.newArrayList(values).stream().map((v) -> v.toString()).collect(Collectors.joining(","));
 	}
+
+	public static ListOfPerson getListOfPerson(COUNT count) {
+
+		List<Person> map = IntStream.range(0, count.getValue()).boxed().map((value) -> new Person())
+				.collect(Collectors.toList());
+
+		return new ListOfPerson(map);
+	}
 }
