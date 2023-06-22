@@ -1,5 +1,6 @@
 package com.jsharper.utils;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -44,6 +45,13 @@ public class Utils {
 
 	}
 
+	public static List<CountryLocal> getByCountryLocal(COUNT count) {
+		Faker faker = Utils.getInstance();
+		return IntStream.range(0, count.getValue()).boxed().map((value) -> new CountryLocal(faker))
+				.collect(Collectors.toList());
+
+	}
+
 	public static List<String> getByCountryStr(COUNT count) {
 		return getByCountry(count).stream().map(Country::name).collect(Collectors.toList());
 	}
@@ -79,5 +87,14 @@ public class Utils {
 				.collect(Collectors.toList());
 
 		return new ListOfPerson(map);
+	}
+
+	public static void sleep(Duration d) {
+
+		try {
+			Thread.sleep(d);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
