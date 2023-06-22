@@ -20,6 +20,7 @@ import com.jsharper.utils.Utils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
 public class UsingBasicsOperators {
 
@@ -105,14 +106,50 @@ public class UsingBasicsOperators {
 
 		Utils.sleep(Duration.ofSeconds(5));
 
-		System.out.println("-----------------------Starting testing interval---------------------");
+		System.out.println("-----------------------Starting testing interval(Duration)Interval---------------------");
 
 		bo.interval(Duration.ofSeconds(5)).log().subscribe(Utils.onNext(), Utils.onError(), Utils.onComplete());
 
 		Utils.sleep(Duration.ofSeconds(35));
 
-		System.out.println("-----------------------End testing interval---------------------");
+		System.out.println("-----------------------End testing interval (Duration)Interval---------------------");
 
+		System.out.println(
+				"-----------------------Starting testing interval startDelay(Duration)(Duration)Interval---------------------");
+
+		bo.interval(Duration.ofSeconds(1), Duration.ofSeconds(5)).log().subscribe(Utils.onNext(), Utils.onError(),
+				Utils.onComplete());
+
+		Utils.sleep(Duration.ofSeconds(36));
+
+		System.out.println(
+				"-----------------------End testing interval startDelay(Duration) (Duration)Interval---------------------");
+
+		System.out.println(
+				"-----------------------Starting testing interval (Duration)Interval Interval with own scheduler paralell---------------------");
+
+		Scheduler newParalell = Schedulers.newParallel("Interval with own scheduler paralell");
+
+		bo.interval(Duration.ofSeconds(1), newParalell).log().subscribe(Utils.onNext(), Utils.onError(),
+				Utils.onComplete());
+
+		Utils.sleep(Duration.ofSeconds(36));
+		System.out.println(
+				"-----------------------End testing interval (Duration)Interval Interval with own scheduler paralell---------------------");
+		newParalell.dispose();
+
+		System.out.println(
+				"-----------------------Starting testing interval (Duration)Interval Interval with own scheduler newSingle---------------------");
+
+		Scheduler newSingle = Schedulers.newSingle("Interval with own scheduler new Single");
+
+		bo.interval(Duration.ofSeconds(1), Duration.ofSeconds(2), newSingle).log().subscribe(Utils.onNext(),
+				Utils.onError(), Utils.onComplete());
+
+		Utils.sleep(Duration.ofSeconds(36));
+		System.out.println(
+				"-----------------------End testing interval (Duration)Interval Interval with own scheduler newSingle---------------------");
+		newSingle.dispose();
 	}
 
 	public Flux<Long> interval(Duration d) {
