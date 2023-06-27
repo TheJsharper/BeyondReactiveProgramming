@@ -1,23 +1,25 @@
 package com.jsharper.flux;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.reactivestreams.Subscription;
 
 import com.jsharper.fluxes.basics.UsingBasicsOperators;
 import com.jsharper.utils.COUNT;
 import com.jsharper.utils.CountryLocal;
+import com.jsharper.utils.CustomSubscriber;
 import com.jsharper.utils.ListOfPerson;
 import com.jsharper.utils.Person;
 import com.jsharper.utils.Utils;
 
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
-import reactor.test.StepVerifier.Step;
 
 public class UsingBasicOperatorsTests {
 
@@ -119,11 +121,47 @@ public class UsingBasicOperatorsTests {
 	@Test
 	public void range() {
 		List<Integer> collect = IntStream.range(0, 10).boxed().collect(Collectors.toList());
-		
+
 		Flux<Integer> range = basicsOperators.range(0, 10);
-		
+
 		StepVerifier.create(range).expectNext(collect.toArray(Integer[]::new)).expectComplete().verify();
 
+	}
+
+	@Test
+	public void subscripeWith() {
+
+		List<CountryLocal> byCountryLocal = Utils.getByCountryLocal(COUNT.TEN).subList(0, 5);
+
+		Flux<CountryLocal> fromIterable = Flux.fromIterable(byCountryLocal);
+
+		AtomicReference<Subscription> ref = new AtomicReference<Subscription>();
+
+		CustomSubscriber<CountryLocal> customerSuscriber = new CustomSubscriber<>(ref);
+
+		basicsOperators.subscripeWith(fromIterable, customerSuscriber);
+
+		Subscription subscription = ref.get();
+
+		subscription.request(5);
+
+		StepVerifier.create(fromIterable).thenRequest(5).expectNext(byCountryLocal.toArray(CountryLocal[]::new))
+				.expectComplete().verify();
+
+		StepVerifier.create(fromIterable).thenAwait().consumeSubscriptionWith((e) -> e.request(5))
+				.expectNext(byCountryLocal.toArray(CountryLocal[]::new)).expectComplete().verify();
+
+	}
+
+	@Test
+	public void subscripeWith2() {
+
+		List<CountryLocal> byCountryLocal = Utils.getByCountryLocal(COUNT.TEN).subList(0, 5);
+
+		Flux<CountryLocal> flatMap = basicsOperators.interval(Duration.ofSeconds(1))
+				.flatMap((v) -> Flux.fromIterable(byCountryLocal));
+
+		StepVerifier.create(flatMap).expectNext(byCountryLocal.toArray(CountryLocal[]::new)).thenAwait(Duration.ofMinutes(1)).expectComplete().verify();
 	}
 
 }
