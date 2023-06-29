@@ -1,6 +1,7 @@
 package com.jsharper.flux;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -19,6 +20,8 @@ import com.jsharper.utils.Person;
 import com.jsharper.utils.Utils;
 
 import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
 public class UsingBasicOperatorsTests {
@@ -154,14 +157,73 @@ public class UsingBasicOperatorsTests {
 	}
 
 	@Test
-	public void subscripeWith2() {
+	public void intervalWithOneParameter() {
+
+		List<CountryLocal> recordedCountry = new ArrayList<>();
 
 		List<CountryLocal> byCountryLocal = Utils.getByCountryLocal(COUNT.TEN).subList(0, 5);
 
 		Flux<CountryLocal> flatMap = basicsOperators.interval(Duration.ofSeconds(1))
 				.flatMap((v) -> Flux.fromIterable(byCountryLocal));
 
-		StepVerifier.create(flatMap).expectNext(byCountryLocal.toArray(CountryLocal[]::new)).thenAwait(Duration.ofMinutes(1)).expectComplete().verify();
+		StepVerifier.create(flatMap).expectNext(byCountryLocal.toArray(CountryLocal[]::new)).recordWith(() -> {
+			return recordedCountry;
+		}).expectNextCount(5).thenCancel().verify();
+		recordedCountry.forEach(c -> System.out.println("---->" + c));
+	}
+
+	@Test
+	public void intervalWithTwoParameters() {
+
+		List<CountryLocal> recordedCountry = new ArrayList<>();
+
+		List<CountryLocal> byCountryLocal = Utils.getByCountryLocal(COUNT.TEN).subList(0, 5);
+
+		Flux<CountryLocal> flatMap = basicsOperators.interval(Duration.ofSeconds(1), Duration.ofSeconds(5))
+				.flatMap((v) -> Flux.fromIterable(byCountryLocal));
+
+		StepVerifier.create(flatMap).expectNext(byCountryLocal.toArray(CountryLocal[]::new)).recordWith(() -> {
+			return recordedCountry;
+		}).expectNextCount(5).thenCancel().verify();
+		recordedCountry.forEach(c -> System.out.println("---->" + c));
+	}
+
+	@Test
+	public void intervalWithTwoParametersWithScheduler() {
+
+		List<CountryLocal> recordedCountry = new ArrayList<>();
+
+		List<CountryLocal> byCountryLocal = Utils.getByCountryLocal(COUNT.TEN).subList(0, 5);
+
+		Scheduler s = Schedulers.newParallel("Testing paralell");
+
+		Flux<CountryLocal> flatMap = basicsOperators.interval(Duration.ofSeconds(1), s)
+				.flatMap((v) -> Flux.fromIterable(byCountryLocal));
+
+		StepVerifier.create(flatMap).expectNext(byCountryLocal.toArray(CountryLocal[]::new)).recordWith(() -> {
+			return recordedCountry;
+		}).expectNextCount(5).thenCancel().verify();
+
+		recordedCountry.forEach(c -> System.out.println("---->" + c));
+	}
+
+	@Test
+	public void intervalWithThreeParametersWithScheduler() {
+
+		List<CountryLocal> recordedCountry = new ArrayList<>();
+
+		List<CountryLocal> byCountryLocal = Utils.getByCountryLocal(COUNT.TEN).subList(0, 5);
+
+		Scheduler s = Schedulers.newParallel("Testing paralell");
+
+		Flux<CountryLocal> flatMap = basicsOperators.interval(Duration.ofSeconds(1), Duration.ofSeconds(5), s)
+				.flatMap((v) -> Flux.fromIterable(byCountryLocal));
+
+		StepVerifier.create(flatMap).expectNext(byCountryLocal.toArray(CountryLocal[]::new)).recordWith(() -> {
+			return recordedCountry;
+		}).expectNextCount(5).thenCancel().verify();
+
+		recordedCountry.forEach(c -> System.out.println("---->" + c));
 	}
 
 }
