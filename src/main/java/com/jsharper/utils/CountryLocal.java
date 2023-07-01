@@ -5,7 +5,7 @@ import com.github.javafaker.Faker;
 
 public class CountryLocal extends Country {
 
-	protected CountryLocal(Faker faker) {
+	public  CountryLocal(Faker faker) {
 		super(faker);
 	}
 
