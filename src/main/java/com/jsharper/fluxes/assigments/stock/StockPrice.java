@@ -38,6 +38,10 @@ public class StockPrice {
 		return Flux.interval(Duration.ofSeconds(1))
 				.map(i -> atomicInteger.getAndAccumulate(instance.random().nextInt(-5, 5), (a, b) -> a + b));
 	}
+	
+	public Flux<Integer> getPriceBetween(Integer from, Integer to){
+		return getPrice().takeUntil((price)-> price >= from && price <= to);
+	}
 
 	private Subscriber<Integer> getSubscriber(CountDownLatch latch) {
 		return new Subscriber<Integer>() {

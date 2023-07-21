@@ -17,10 +17,18 @@ public class StockPriceTests {
 
 	@Test
 	public void getPrice() {
-		Long requestCount = 10L;
-		Flux<Integer> price = stockPrice.getPrice().take(requestCount, false);
 
-		StepVerifier.create(price).expectSubscription().expectNextCount(requestCount).expectComplete().verify();
+		Flux<Integer> price = stockPrice.getPrice().log();
+
+		StepVerifier.create(price).thenConsumeWhile(next -> next <= 120).thenCancel().verify();
+	}
+
+	@Test
+	public void getPriceBetween() {
+
+		Flux<Integer> price = stockPrice.getPriceBetween(90, 110).log();
+
+		StepVerifier.create(price).thenConsumeWhile(next -> next >= 90 && next <= 110).thenCancel().verify();
 	}
 
 }

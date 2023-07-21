@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
-import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import com.github.javafaker.Faker;
@@ -22,11 +21,8 @@ public class UsingCreate {
 
 		UsingCreate create = new UsingCreate();
 
-		AtomicReference<Subscription> ref = new AtomicReference<>();
-
-		Subscriber<Object> defaultSubscriber = new DefaultSubscriber<Object>("Testing", ref, 10L);
-
-		create.createSimple(Utils.getByCountryStr(COUNT.TEN)).subscribe(defaultSubscriber);
+		create.createSimple(Utils.getByCountryStr(COUNT.TEN))
+				.subscribe(new DefaultSubscriber<Object>("Testing-1", new AtomicReference<Subscription>(), 10L));
 
 		create.create(COUNT.TEN)
 				.subscribe(new DefaultSubscriber<Object>("Testing-2", new AtomicReference<Subscription>(), 10L));
